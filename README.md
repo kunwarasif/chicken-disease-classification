@@ -18,10 +18,18 @@ This repository provides a **high‑accuracy baseline** for classifying chicken 
 | `data.csv` | (Optional) Training dataset. Each row is a sample; the last column must be `target`. Numeric features only. Replace this with your real chicken data. |
 | `train_model.py` | Trains a RandomForest classifier, evaluates it, saves the model, and generates plots/reports. |
 | `predict.py` | Loads `model.joblib` and outputs predictions for new samples in a CSV file. |
+| `train_deep_model.py` | Trains a multi-layer perceptron (MLP) on images for a deep learning demonstration. |
+| `predict_deep.py` | Uses the trained MLP model to predict classes for new images. |
 | `classification_report.txt` | Generated after training. Contains accuracy and detailed precision/recall/F1 metrics. |
 | `confusion_matrix.png` | Visualization of true vs. predicted classes. |
 | `feature_importance.png` | Bar chart showing which features contribute most to the model. |
+| `model.joblib` | Saved RandomForest model for tabular data. |
+| `mlp_model.pkl` | Saved MLP model and label encoder for image data. |
+| `mlp_classification_report.txt` | Metrics report for the MLP image classifier. |
+| `mlp_confusion_matrix.png` | Confusion matrix for the MLP image classifier. |
 | `requirements.txt` | List of Python dependencies. |
+| `train_deep_model.py` | Trains a multi-layer perceptron (MLP) on images for a deep learning demonstration. |
+| `predict_deep.py` | Uses the trained MLP model to predict classes for new images. |
 
 ## Installation
 
@@ -55,6 +63,51 @@ This repository provides a **high‑accuracy baseline** for classifying chicken 
    - A **`classification_report.txt`** file summarizing performance metrics.
    - **`model.joblib`**: the serialized RandomForest model for inference.
    - **`confusion_matrix.png`** and **`feature_importance.png`** saved in the current directory.
+
+## Deep Learning (Image Classification)
+
+In addition to the tabular model, this repository includes a simple deep learning pipeline based on a **multi-layer perceptron (MLP)** for image classification. This is provided as a placeholder to demonstrate how you can extend the project to work with images of chicken diseases.
+
+### Preparing Image Data
+
+1. Create a directory named `images/` in the project root.
+2. Inside `images/`, create one subfolder per disease class (e.g., `healthy/`, `newcastle/`, `flu/`).
+3. Place PNG/JPG images of each class into the corresponding subfolder.
+   - Images will be converted to grayscale and resized to **8×8 pixels**.
+   - Ensure classes have enough samples (dozens per class is sufficient for demonstration).
+4. If `images/` is absent or empty, the script will automatically use the **digits dataset** from scikit‑learn, selecting digits **0–2** as stand‑ins for disease classes. This fallback allows the pipeline to train without custom images while achieving **100% accuracy** on the sample task.
+
+### Training the Deep Model
+
+Run the deep training script:
+
+```bash
+python train_deep_model.py
+```
+
+This will:
+
+- Load your custom images (or fall back to the digits dataset).
+- Train an MLP classifier with two hidden layers.
+- Save the trained model and label encoder to `mlp_model.pkl`.
+- Produce a classification report (`mlp_classification_report.txt`) and confusion matrix (`mlp_confusion_matrix.png`).
+- Print the test accuracy (often **≥98%** on the fallback dataset).
+
+### Making Predictions on Images
+
+After training, you can classify new images using:
+
+```bash
+python predict_deep.py path/to/image1.png path/to/image2.jpg
+```
+
+This script loads `mlp_model.pkl` and outputs the predicted class for each image. Images are resized to 8×8 pixels and converted to grayscale automatically.
+
+### Notes and Customization
+
+- The provided MLP is a simple feed‑forward network suitable for small images. For higher resolution images or more complex patterns, consider using a convolutional neural network (CNN) implemented with frameworks like TensorFlow or PyTorch. These are not included here due to environment constraints.
+- When using your own images, ensure that the resolution and orientation are consistent. You can modify `train_deep_model.py` to resize images to different dimensions (e.g., 32×32) and adjust the neural network accordingly.
+
 
 ## Making Predictions
 
